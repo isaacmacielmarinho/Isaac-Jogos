@@ -1,0 +1,27 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once __DIR__ . '/config.php';
+
+function is_logged_in(): bool {
+    return isset($_SESSION['usuario_id']);
+}
+
+function is_admin(): bool {
+    return is_logged_in() && ($_SESSION['usuario_perfil'] ?? '') === 'admin';
+}
+
+function require_login(): void {
+    if (!is_logged_in()) {
+        header('Location: login.php');
+        exit;
+    }
+}
+
+function require_admin(): void {
+    if (!is_admin()) {
+        die("Acesso negado. Área restrita a administradores.");
+    }
+}
